@@ -126,8 +126,8 @@ export class Roulette extends EventTarget {
         const excludeNames = ['인천', '황인천','천','인','광모','안광모','민규','김민규'];  // 골인에 도달하지 않도록 할 이름
         const explodeThreshold = 20;  // goalY와의 거리 임계값
         const pushForce = 5;  // 밀어낼 힘의 크기
-        const pullForce = 3;  // 골인 지점으로 끌어당길 힘
-        const pullForceX = 3 + Math.random();  // X축으로 끌어당길 힘 (1~2 사이)
+        const pullForce = 1.5;  // 골인 지점으로 끌어당길 힘
+        const pullForceX = 1 + Math.random();  // X축으로 끌어당길 힘 (1~2 사이)
         const pushLimit = 5;  // 밀어내는 최대 횟수
         let pushCount: { [key: string]: number } = {};  // 각 구슬의 밀어내기 카운트 저장
     
