@@ -123,7 +123,7 @@ export class Roulette extends EventTarget {
     private _updateMarbles(deltaTime: number) {
         if (!this._stage) return;
     
-        const excludeNames = ['인천', '황인천','천','인','광모','안광모','민규','김민규'];  // 골인에 도달하지 않도록 할 이름
+        const excludeNames = ['인천', '황인천','천','인','광모','안광모','민규','김민규','재도전','박상현','상현'];  // 골인에 도달하지 않도록 할 이름
         var explodeThreshold = 0;  // goalY와의 거리 임계값
         const pushForce = 5;  // 밀어낼 힘의 크기
         const pullForce = 1.5;  // 골인 지점으로 끌어당길 힘
