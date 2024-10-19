@@ -127,7 +127,7 @@ export class Roulette extends EventTarget {
         var explodeThreshold = 0;  // goalY와의 거리 임계값
         const pushForce = 5;  // 밀어낼 힘의 크기
         const pullForce = 1.5;  // 골인 지점으로 끌어당길 힘
-        const pullForceX = 3 + Math.random();  // X축으로 끌어당길 힘 (1~2 사이)
+        var pullForceX = 3 + Math.random();  // X축으로 끌어당길 힘 (1~2 사이)
         const pushLimit = 5;  // 밀어내는 최대 횟수
         let pushCount: { [key: string]: number } = {};  // 각 구슬의 밀어내기 카운트 저장
         let applyCount: { [key: string]: number } = {};  // 각 이름별로 끌어당긴 구슬 개수를 추적
@@ -137,6 +137,7 @@ export class Roulette extends EventTarget {
         
         if ( this._stage.title === 'Pot of greed') {
             explodeThreshold=25;
+            pullForceX = 5 + Math.random();
         }
         
         for (let i = 0; i < this._marbles.length; i++) {
