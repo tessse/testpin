@@ -20,7 +20,7 @@ export const stages: StageDef[] = [
     {
         title: 'Wheel of fortune',
         goalY: 111,
-        goalX: 14,  // 중앙 X좌표 추가
+        goalX: 15.5,  // 중앙 X좌표 추가
         zoomY: 106.75,
         walls: [
             [
@@ -133,7 +133,7 @@ export const stages: StageDef[] = [
     {
         title: 'BubblePop',
         goalY: 83,
-        goalX: 13,
+        goalX: 11,
         zoomY: 78,
         walls: [
             [ // left
@@ -264,7 +264,7 @@ export const stages: StageDef[] = [
     {
         title: 'Pot of greed',
         goalY: 111,
-        goalX: 13.5,
+        goalX: 13.3,
         zoomY: 110,
         walls: [
             [

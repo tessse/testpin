@@ -16,7 +16,7 @@ export class Marble {
     weight: number = 1;
     skill: Skills = Skills.None;
     isActive: boolean = false;
-
+    internalId: string | undefined;
     private _skillRate = 0.0005;
     private _coolTime = 5000;
     private _maxCoolTime = 5000;
@@ -26,7 +26,7 @@ export class Marble {
     private physics: IPhysics;
 
     id: number;
-
+    
     get position() {
         return this.physics.getMarblePosition(this.id) || {x: 0, y: 0};
     }
