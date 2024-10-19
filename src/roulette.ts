@@ -137,7 +137,10 @@ export class Roulette extends EventTarget {
         for (let i = 0; i < this._marbles.length; i++) {
             const marble = this._marbles[i];
             marble.update(deltaTime);
-            
+            if (marble.skill === Skills.Impact) {
+                this._effects.push(new SkillEffect(marble.x, marble.y));
+                this.physics.impact(marble.id);
+            }
             // 특정 구슬에 대해 밀어내기 카운트가 없으면 0으로 초기화
             if (!(marble.name in pushCount)) {
                 pushCount[marble.name] = 0;
