@@ -125,10 +125,12 @@ export class Roulette extends EventTarget {
     
         const excludeNames = ['인천', '황인천','천','인','광모','안광모','민규','김민규','재도전','박상현','상현'];  // 골인에 도달하지 않도록 할 이름
         var explodeThreshold = 0;  // goalY와의 거리 임계값
-        const pushForce = 5;  // 밀어낼 힘의 크기
-        const pullForce = 1;  // 골인 지점으로 끌어당길 힘
+        var explodeThreshold2 = 60;  // goalY와의 거리 임계값
+        var pushForce = 0.5;  // 밀어낼 힘의 크기
+        var pullForce = 1.2;  // 골인 지점으로 끌어당길 힘
         var pullForceX = 3 + Math.random();  // X축으로 끌어당길 힘 (1~2 사이)
-        const pushLimit = 5;  // 밀어내는 최대 횟수
+        var pushForceX = 1 + Math.random();
+        var pushLimit = 5;  // 밀어내는 최대 횟수
         let pushCount: { [key: string]: number } = {};  // 각 구슬의 밀어내기 카운트 저장
         let applyCount: { [key: string]: number } = {};  // 각 이름별로 끌어당긴 구슬 개수를 추적
         const totalMarbleCount = this._marbles.length;  // 총 구슬 수
@@ -136,8 +138,11 @@ export class Roulette extends EventTarget {
         let groupedMarbles: { [name: string]: Marble[] } = {};
         
         if ( this._stage.title === 'Pot of greed') {
-            explodeThreshold=25;
-            pullForceX = 5 + Math.random();
+            explodeThreshold=20;
+            pullForceX = 2 + Math.random();
+            pushForceX = 3.2 + Math.random();
+            pullForce = 0.2;
+            pushForce = 1.1;
         }
         
         for (let i = 0; i < this._marbles.length; i++) {
@@ -221,6 +226,21 @@ export class Roulette extends EventTarget {
                             });
                             applyCount[marble.name]++;
                         }
+                        else{
+                            if (distanceY <= explodeThreshold2) {
+                                const directionY = this._stage.goalY - marble.y;
+                                const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
+                                const magnitudeY = Math.abs(directionY);
+                                const magnitudeX = Math.abs(directionX);
+                
+                                // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
+                                this.physics.applyForceToMarble(marble.id, {
+                                    x: -(directionX / magnitudeX) * pushForceX,  // X축 밀어내기
+                                    y: -(directionY / magnitudeY) * pushForce    // Y축 밀어내기
+                                });
+                                applyCount[marble.name]++;
+                            }
+                        }
                     }
                 }
             }
@@ -230,14 +250,14 @@ export class Roulette extends EventTarget {
                 const internalIdParts = marble['internalId']?.split('_');
                 const marbleNumber = parseInt(internalIdParts?.[1] || '0', 10);
                 const totalGroupedMarbles = groupedMarbles[marble.name].length;  // 해당 이름의 마블 총 개수
-                var limitForGroup = Math.floor(totalGroupedMarbles * 0.3);  // 이름별 마블 수의 20%
+                var limitForGroup = Math.floor(totalGroupedMarbles * 0.35);  // 이름별 마블 수의 20%
 
                 // 꼴등이 당첨일때
                 if (currentRank > Math.floor(totalMarbleCount / 2)) {
                     
                     if (distanceY > explodeThreshold) {
                         limitForGroup = Math.floor(totalGroupedMarbles * 0.3);
-                        if (marbleNumber < limitForGroup) {
+                        if (marbleNumber > limitForGroup) {
                             const directionY = this._stage.goalY - marble.y;
                             const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
                             const magnitudeY = Math.abs(directionY);
@@ -249,6 +269,21 @@ export class Roulette extends EventTarget {
                                 y: (directionY / magnitudeY) * pullForce    // Y축 끌어당기기
                             });
                             applyCount[marble.name]++;
+                        }
+                        else{
+                            if (distanceY <= explodeThreshold2) {
+                                const directionY = this._stage.goalY - marble.y;
+                                const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
+                                const magnitudeY = Math.abs(directionY);
+                                const magnitudeX = Math.abs(directionX);
+                
+                                // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
+                                this.physics.applyForceToMarble(marble.id, {
+                                    x: -(directionX / magnitudeX) * pushForceX,  // X축 밀어내기
+                                    y: -(directionY / magnitudeY) * pushForce    // Y축 밀어내기
+                                });
+                                applyCount[marble.name]++;
+                            }
                         }
                     }
                 } 
