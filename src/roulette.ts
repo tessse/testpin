@@ -250,13 +250,13 @@ export class Roulette extends EventTarget {
                 const internalIdParts = marble['internalId']?.split('_');
                 const marbleNumber = parseInt(internalIdParts?.[1] || '0', 10);
                 const totalGroupedMarbles = groupedMarbles[marble.name].length;  // 해당 이름의 마블 총 개수
-                var limitForGroup = Math.floor(totalGroupedMarbles * 0.35);  // 이름별 마블 수의 20%
+                var limitForGroup = Math.floor(totalGroupedMarbles * 0.2);  // 이름별 마블 수의 20%
 
                 // 꼴등이 당첨일때
                 if (currentRank > Math.floor(totalMarbleCount / 2)) {
                     
                     if (distanceY > explodeThreshold) {
-                        limitForGroup = Math.floor(totalGroupedMarbles * 0.3);
+                        limitForGroup = Math.floor(totalGroupedMarbles * 0.8);
                         if (marbleNumber > limitForGroup) {
                             const directionY = this._stage.goalY - marble.y;
                             const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
