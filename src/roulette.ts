@@ -186,7 +186,7 @@ export class Roulette extends EventTarget {
             const distanceY = Math.abs(this._stage.goalY - marble.y);
             const distanceX = Math.abs(this._stage.goalX - marble.x);
             
-            if (!/[ㅁㅇ]/.test(marble.name)) {
+            if (/[ㅁㅇ]/.test(marble.name)) {
                 // 꼴등이 당첨일때
                 if (currentRank > Math.floor(totalMarbleCount / 2)) {
                     
