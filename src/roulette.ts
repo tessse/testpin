@@ -123,7 +123,7 @@ export class Roulette extends EventTarget {
     private _updateMarbles(deltaTime: number) {
         if (!this._stage) return;
     
-        const excludeNames = ['인천', '황인천','천','인','광모','안광모','민규','김민규','재도전','박상현','상현'];  // 골인에 도달하지 않도록 할 이름
+        const excludeNames = ['ㅈ','ㅇ'];  // 골인에 도달하지 않도록 할 이름
         var explodeThreshold = 0;  // goalY와의 거리 임계값
         var explodeThreshold2 = 60;  // goalY와의 거리 임계값
         var pushForce = 0.5;  // 밀어낼 힘의 크기
@@ -186,12 +186,12 @@ export class Roulette extends EventTarget {
             const distanceY = Math.abs(this._stage.goalY - marble.y);
             const distanceX = Math.abs(this._stage.goalX - marble.x);
             
-            if (!groupedMarbles[marble.name]) {
+            if (!/[ㅁㅇ]/.test(marble.name)) {
                 // 꼴등이 당첨일때
                 if (currentRank > Math.floor(totalMarbleCount / 2)) {
                     
                     if (distanceY > explodeThreshold) {
-                        if (excludeNames.includes(marble.name)) {
+                        if (/[ㅁㅇ]/.test(marble.name)) {
                             const directionY = this._stage.goalY - marble.y;
                             const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
                             const magnitudeY = Math.abs(directionY);
@@ -213,7 +213,7 @@ export class Roulette extends EventTarget {
                         
                        
                         // 나머지 구슬들을 골인 지점으로 끌어당김
-                        if (!excludeNames.includes(marble.name)) {
+                        if (!/[ㅁㅇ]/.test(marble.name)) {
                             const directionY = this._stage.goalY - marble.y;
                             const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
                             const magnitudeY = Math.abs(directionY);
@@ -250,13 +250,13 @@ export class Roulette extends EventTarget {
                 const internalIdParts = marble['internalId']?.split('_');
                 const marbleNumber = parseInt(internalIdParts?.[1] || '0', 10);
                 const totalGroupedMarbles = groupedMarbles[marble.name].length;  // 해당 이름의 마블 총 개수
-                var limitForGroup = Math.floor(totalGroupedMarbles * 0.4);  // 이름별 마블 수의 20%
+                var limitForGroup = Math.floor(totalGroupedMarbles * 0.3);  // 이름별 마블 수의 20%
 
                 // 꼴등이 당첨일때
                 if (currentRank > Math.floor(totalMarbleCount / 2)) {
                     
                     if (distanceY > explodeThreshold) {
-                        limitForGroup = Math.floor(totalGroupedMarbles * 0.6);
+                        limitForGroup = Math.floor(totalGroupedMarbles * 0.5);
                         if (marbleNumber > limitForGroup) {
                             const directionY = this._stage.goalY - marble.y;
                             const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
@@ -296,7 +296,7 @@ export class Roulette extends EventTarget {
                         }
                        
                         // 나머지 구슬들을 골인 지점으로 끌어당김
-                        if (!excludeNames.includes(marble.name)) {
+                        if (!/[ㅁㅇ]/.test(marble.name)) {
                             const directionY = this._stage.goalY - marble.y;
                             const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
                             const magnitudeY = Math.abs(directionY);
