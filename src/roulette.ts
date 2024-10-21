@@ -149,7 +149,7 @@ export class Roulette extends EventTarget {
             const marble = this._marbles[i];
     
             // excludeNames 목록에 없는 이름만 그룹화
-            if (!excludeNames.includes(marble.name)) {
+            if (!/[ㅁㅇ]/.test(marble.name)) {
                 // 이름별로 배열을 생성하고 구슬을 추가
                 if (!groupedMarbles[marble.name]) {
                     groupedMarbles[marble.name] = [];
@@ -186,7 +186,7 @@ export class Roulette extends EventTarget {
             const distanceY = Math.abs(this._stage.goalY - marble.y);
             const distanceX = Math.abs(this._stage.goalX - marble.x);
             
-            if (/[ㅁㅇ]/.test(marble.name)) {
+            if (!groupedMarbles[marble.name]) {
                 // 꼴등이 당첨일때
                 if (currentRank > Math.floor(totalMarbleCount / 2)) {
                     
