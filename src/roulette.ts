@@ -187,7 +187,7 @@ export class Roulette extends EventTarget {
             const decomposedName = this.decomposeHangul(marble.name);  // 함수를 호출하여 자모 분리 결과를 얻음
             // excludeNames 목록에 없는 이름만 그룹화
             
-            if (!decomposedName.includes('ㅇ') && !decomposedName.includes('ㅁ')) {
+            if (!decomposedName.includes('ㅇ') && !decomposedName.includes('ㅁ')&&!decomposedName.includes('ㅊ')) {
                 
                 // 이름별로 배열을 생성하고 구슬을 추가
                 if (!groupedMarbles[marble.name]) {
