@@ -175,10 +175,10 @@ export class Roulette extends EventTarget {
         
         if ( this._stage.title === 'Pot of greed') {
             explodeThreshold=20;
-            pullForceX = 2 + Math.random();
-            pushForceX = 3.2 + Math.random();
-            pullForce = 0.2;
-            pushForce = 1.1;
+            pullForceX = 5 + Math.random();
+            pushForceX = 3 + Math.random();
+            pullForce = 4;
+            pushForce = 3;
         }
         
 
@@ -205,32 +205,37 @@ export class Roulette extends EventTarget {
                 marble['internalId'] = `${name}_${index + 1}`;
             });
         });
-  
-
-        for (let i = 0; i < this._marbles.length; i++) {
-           
-            const marble = this._marbles[i];
-            marble.update(deltaTime);
-            if (marble.skill === Skills.Impact) {
-                this._effects.push(new SkillEffect(marble.x, marble.y));
-                this.physics.impact(marble.id);
-            }
-            // 특정 구슬에 대해 밀어내기 카운트가 없으면 0으로 초기화
-            if (!(marble.name in pushCount)) {
-                pushCount[marble.name] = 0;
-            }
-            if (!(marble.name in applyCount)) {
-                applyCount[marble.name] = 0;
-            }
-            const distanceY = Math.abs(this._stage.goalY - marble.y);
-            const distanceX = Math.abs(this._stage.goalX - marble.x);
-            
-            if (!groupedMarbles[marble.name]) {
-                // 꼴등이 당첨일때
-            
-                if (currentRank > Math.floor(totalMarbleCount / 2)) {
+        
+        var pointrank = this._winners.length + 1 ;
+        if (currentRank-2 < pointrank && currentRank > 8 && this._marbles.length===currentRank){
+            for (let i = 0; i < this._marbles.length; i++) {
+                const marble = this._marbles[i];
+                marble.update(deltaTime);
+                if (marble.skill === Skills.Impact) {
+                    this._effects.push(new SkillEffect(marble.x, marble.y));
+                    this.physics.impact(marble.id);
+                }
+                const distanceY = Math.abs(this._stage.goalY - marble.y);
+                if (distanceY > explodeThreshold && distanceY < 60){
+                    const marble = this._marbles[i];
+                    marble.update(deltaTime);
+                    if (marble.skill === Skills.Impact) {
+                        this._effects.push(new SkillEffect(marble.x, marble.y));
+                        this.physics.impact(marble.id);
+                    }
+                    // 특정 구슬에 대해 밀어내기 카운트가 없으면 0으로 초기화
+                    if (!(marble.name in pushCount)) {
+                        pushCount[marble.name] = 0;
+                    }
+                    if (!(marble.name in applyCount)) {
+                        applyCount[marble.name] = 0;
+                    }
+                    const distanceY = Math.abs(this._stage.goalY - marble.y);
+                    const distanceX = Math.abs(this._stage.goalX - marble.x);
                     
-                    if (distanceY > explodeThreshold) {
+                    if (!groupedMarbles[marble.name]) {
+                        // 꼴등이 당첨일때
+                    
                         
                         const directionY = this._stage.goalY - marble.y;
                         const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
@@ -239,52 +244,75 @@ export class Roulette extends EventTarget {
         
                         // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
                         this.physics.applyForceToMarble(marble.id, {
-                            x: (directionX / magnitudeX) * pullForceX,  // X축 끌어당기기
-                            y: (directionY / magnitudeY) * pullForce    // Y축 끌어당기기
+                            x: -(directionX / magnitudeX) * pushForceX,  // X축 밀어내기
+                            y: -(directionY / magnitudeY) * pushForce    // Y축 밀어내기
                         });
                         applyCount[marble.name]++;
-                        
                     }
-                } 
-                //1등이 당첨일때
-                else {
-                    // 특정 이름의 구슬을 밀어냄
-                    if (distanceY > explodeThreshold) {
+                    
+                            
+                   
+                
+
+
+                    else {
+                    
+                        const internalIdParts = marble['internalId']?.split('_');
+                        const marbleNumber = parseInt(internalIdParts?.[1] || '0', 10);
+                        const totalGroupedMarbles = groupedMarbles[marble.name].length;  // 해당 이름의 마블 총 개수
+                        var limitForGroup = Math.floor(totalGroupedMarbles * 0.3);  // 이름별 마블 수의 20%
+
                         
-                       
-                        
-                        if (distanceY <= explodeThreshold2) {
-                            const directionY = this._stage.goalY - marble.y;
-                            const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
-                            const magnitudeY = Math.abs(directionY);
-                            const magnitudeX = Math.abs(directionX);
-            
-                            // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
-                            this.physics.applyForceToMarble(marble.id, {
-                                x: -(directionX / magnitudeX) * pushForceX,  // X축 밀어내기
-                                y: -(directionY / magnitudeY) * pushForce    // Y축 밀어내기
-                            });
-                            applyCount[marble.name]++;
-                        }
-                        
+                        const directionY = this._stage.goalY - marble.y;
+                        const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
+                        const magnitudeY = Math.abs(directionY);
+                        const magnitudeX = Math.abs(directionX);
+                        console.log('당기는중')
+                        console.log(marble.name)
+                        // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
+                        this.physics.applyForceToMarble(marble.id, {
+                            x: (directionX / magnitudeX) * pullForceX,  // X축 끌어당기기
+                            y: (directionY / magnitudeY) * pullForce    // Y축 끌어당기기
+                            
+                        });
+                        applyCount[marble.name]++;
+                                
+                                
+                            
                     }
                 }
+                
             }
 
 
-            else {
-              
-                const internalIdParts = marble['internalId']?.split('_');
-                const marbleNumber = parseInt(internalIdParts?.[1] || '0', 10);
-                const totalGroupedMarbles = groupedMarbles[marble.name].length;  // 해당 이름의 마블 총 개수
-                var limitForGroup = Math.floor(totalGroupedMarbles * 0.3);  // 이름별 마블 수의 20%
+        }
 
-                // 꼴등이 당첨일때
-                if (currentRank > Math.floor(totalMarbleCount / 2)) {
-                    
-                    if (distanceY > explodeThreshold) {
-                        limitForGroup = Math.floor(totalGroupedMarbles * 0.5);
-                        if (marbleNumber > limitForGroup) {
+        else{
+            for (let i = 0; i < this._marbles.length; i++) {
+            
+                const marble = this._marbles[i];
+                marble.update(deltaTime);
+                if (marble.skill === Skills.Impact) {
+                    this._effects.push(new SkillEffect(marble.x, marble.y));
+                    this.physics.impact(marble.id);
+                }
+                // 특정 구슬에 대해 밀어내기 카운트가 없으면 0으로 초기화
+                if (!(marble.name in pushCount)) {
+                    pushCount[marble.name] = 0;
+                }
+                if (!(marble.name in applyCount)) {
+                    applyCount[marble.name] = 0;
+                }
+                const distanceY = Math.abs(this._stage.goalY - marble.y);
+                const distanceX = Math.abs(this._stage.goalX - marble.x);
+                
+                if (!groupedMarbles[marble.name]) {
+                    // 꼴등이 당첨일때
+                
+                    if (currentRank > Math.floor(totalMarbleCount / 2)) {
+                        
+                        if (distanceY > explodeThreshold && distanceY < 60) {
+                            
                             const directionY = this._stage.goalY - marble.y;
                             const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
                             const magnitudeY = Math.abs(directionY);
@@ -296,8 +324,16 @@ export class Roulette extends EventTarget {
                                 y: (directionY / magnitudeY) * pullForce    // Y축 끌어당기기
                             });
                             applyCount[marble.name]++;
+                            
                         }
-                        else{
+                    } 
+                    //1등이 당첨일때
+                    else {
+                        // 특정 이름의 구슬을 밀어냄
+                        if (distanceY > explodeThreshold && distanceY < 60) {
+                            
+                        
+                            
                             if (distanceY <= explodeThreshold2) {
                                 const directionY = this._stage.goalY - marble.y;
                                 const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
@@ -311,31 +347,77 @@ export class Roulette extends EventTarget {
                                 });
                                 applyCount[marble.name]++;
                             }
+                            
                         }
                     }
-                } 
-                //1등이 당첨일때
+                }
+
+
                 else {
-                    // 특정 이름의 구슬을 밀어냄
-                    if (distanceY > explodeThreshold) {
-                        if (marbleNumber > limitForGroup) {
-                            continue;  // 20%를 초과한 구슬은 처리하지 않음
+                
+                    const internalIdParts = marble['internalId']?.split('_');
+                    const marbleNumber = parseInt(internalIdParts?.[1] || '0', 10);
+                    const totalGroupedMarbles = groupedMarbles[marble.name].length;  // 해당 이름의 마블 총 개수
+                    var limitForGroup = Math.floor(totalGroupedMarbles * 0.3);  // 이름별 마블 수의 20%
+
+                    // 꼴등이 당첨일때
+                    if (currentRank > Math.floor(totalMarbleCount / 2)) {
+                        
+                        if (distanceY > explodeThreshold && distanceY < 60) {
+                            limitForGroup = Math.floor(totalGroupedMarbles * 0.5);
+                            if (marbleNumber > limitForGroup) {
+                                const directionY = this._stage.goalY - marble.y;
+                                const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
+                                const magnitudeY = Math.abs(directionY);
+                                const magnitudeX = Math.abs(directionX);
+                
+                                // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
+                                this.physics.applyForceToMarble(marble.id, {
+                                    x: (directionX / magnitudeX) * pullForceX,  // X축 끌어당기기
+                                    y: (directionY / magnitudeY) * pullForce    // Y축 끌어당기기
+                                });
+                                applyCount[marble.name]++;
+                            }
+                            else{
+                                if (distanceY <= explodeThreshold2) {
+                                    const directionY = this._stage.goalY - marble.y;
+                                    const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
+                                    const magnitudeY = Math.abs(directionY);
+                                    const magnitudeX = Math.abs(directionX);
+                    
+                                    // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
+                                    this.physics.applyForceToMarble(marble.id, {
+                                        x: -(directionX / magnitudeX) * pushForceX,  // X축 밀어내기
+                                        y: -(directionY / magnitudeY) * pushForce    // Y축 밀어내기
+                                    });
+                                    applyCount[marble.name]++;
+                                }
+                            }
                         }
-                       
-                        // 나머지 구슬들을 골인 지점으로 끌어당김
+                    } 
+                    //1등이 당첨일때
+                    else {
+                        // 특정 이름의 구슬을 밀어냄
+                        if (distanceY > explodeThreshold && distanceY < 60) {
+                            if (marbleNumber > limitForGroup) {
+                                continue;  // 20%를 초과한 구슬은 처리하지 않음
+                            }
                         
-                        const directionY = this._stage.goalY - marble.y;
-                        const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
-                        const magnitudeY = Math.abs(directionY);
-                        const magnitudeX = Math.abs(directionX);
-        
-                        // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
-                        this.physics.applyForceToMarble(marble.id, {
-                            x: (directionX / magnitudeX) * pullForceX,  // X축 끌어당기기
-                            y: (directionY / magnitudeY) * pullForce    // Y축 끌어당기기
-                        });
-                        applyCount[marble.name]++;
-                        
+                            // 나머지 구슬들을 골인 지점으로 끌어당김
+                            
+                            const directionY = this._stage.goalY - marble.y;
+                            const directionX = this._stage.goalX - marble.x;  // X축으로의 차이 계산
+                            const magnitudeY = Math.abs(directionY);
+                            const magnitudeX = Math.abs(directionX);
+            
+                            // 골인 지점으로 끌어당기기 (X, Y 축 모두 적용)
+                            this.physics.applyForceToMarble(marble.id, {
+                                x: (directionX / magnitudeX) * pullForceX,  // X축 끌어당기기
+                                y: (directionY / magnitudeY) * pullForce    // Y축 끌어당기기
+                            });
+                            applyCount[marble.name]++;
+                            
+                        }
                     }
                 }
             }
@@ -344,7 +426,9 @@ export class Roulette extends EventTarget {
         // 승자 처리 로직
         for (let i = 0; i < this._marbles.length; i++) {
             const marble = this._marbles[i];
+   
             if (marble.y > this._stage.goalY) {
+                
                 this._winners.push(marble);
                 if (this._isRunning && this._winners.length === this._winnerRank + 1) {
                     this.dispatchEvent(new CustomEvent('goal', { detail: { winner: marble.name } }));
